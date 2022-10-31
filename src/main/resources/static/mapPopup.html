@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>지도 입력기</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=9524c890bbd5bbffb9e7e3559997c998"></script>
+</head>
+<body>
+    <div id="map" style="width:100%;height:350px;"></div>
+    
+    <button id="btn-end">완료</button>
+
+    <script type="text/javascript" src="js/map.js"></script>
+    <script>
+        let mb = new MarketMapBuilder(document.getElementById('map'), {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        })
+
+        document.getElementById('btn-end').addEventListener('click',(e) => {
+            let ret = JSON.stringify(mb.getObj('xx'))
+            console.log(mb.getObj(ret))
+            opener.document.getElementById('map-input').value=ret
+            window.close()
+        })
+        
+    </script>
+</body>
+</html>

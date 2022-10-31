@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head th:replace="/fragment :: head">
+    <title>Demo</title>
+</head>
+<body>
+<header th:replace="/fragment :: header"></header>
+<main class="d-flex flex-column justify-content-center w-100 container-lg mt-1">
+    <div class="d-flex justify-content-between align-items-center w-100 my-3">
+        <h2 class="d-flex align-items-center">내 장치 목록들</h2>
+        <div class="d-flex flex-row">
+            <a class="btn btn-primary" th:href="@{/shopping/mall/new/create}">시장 등록</a>
+        </div>
+    </div>
+
+    <table class="table table-hover border border-secondary rounded mb-3">
+        <thead>
+            <tr>
+                <th scope="col">시장 번호</th>
+                <th scope="col">시장 이름</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="shoppingMall : ${shoppingMallItems}" th:attr="data-href=@{/shopping/mall/{id}/update(id=${shoppingMall.id})}">
+            <th scope="row" th:text="${shoppingMall.id}">시장 번호</th>
+            <td th:text="${shoppingMall.name}">시장 이름</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer th:replace="/fragment :: footer"></footer>
+<script>
+    $(document).ready(function(){
+        $('table tbody tr').click(function(){
+            window.location = $(this).data('href');
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

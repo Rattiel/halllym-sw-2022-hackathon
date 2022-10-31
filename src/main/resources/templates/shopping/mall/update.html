@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
+<head th:replace="/fragment :: head">
+    <title>DEMO</title>
+</head>
+<body>
+<header th:replace="/fragment :: header"></header>
+<main class="d-flex justify-content-center container-lg mt-1">
+    <form id="delete-form" th:action="@{/shopping/mall/{id}/delete(id=${id})}" method="post"></form>
+    <form class="w-100 my-3" th:action="@{/shopping/mall/{id}/update(id=${id})}" th:object="${form}" method="post">
+        <input type="hidden" id="map-input" th:field="*{map}">
+        <div class="mb-3">
+            <label class="form-label" for="name-input">이름</label>
+            <input class="form-control" type="text" id="name-input" th:field="*{name}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">이름 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="thumbnail-list">썸네일</label>
+            <div id="thumbnail-list" class="d-flex flex-column">
+                <th:block th:each="thumbnail, stat : *{thumbnails}">
+                    <div class="d-flex flex-row mb-1">
+                        <input class="form-control" type="text" name="thumbnails" th:value="${thumbnail}" readonly>
+                        <button class="btn btn-danger ml-2" onclick="deleteThumbnailImage(this)">삭제</button>
+                    </div>
+                </th:block>
+            </div>
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('thumbnails')}" th:errors="*{thumbnails}">썸네일 오류</th:block>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">썸네일 업로드</span>
+            </div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="thumbnail-upload-input" accept=".gif, .jpg, .png" onchange="uploadThumbnailImage(this)">
+                <label class="custom-file-label" for="thumbnail-upload-input">이미지 선택하기</label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="map-open">위치 등록</label>
+            <button class="btn btn-primary mx-1" id="map-open">등록하기</button>
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('map')}" th:errors="*{map}">지도 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="name-input">주소</label>
+            <input class="form-control" type="text" id="address-input" th:field="*{address}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('address')}" th:errors="*{address}">주소 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="phone-input">전화번호</label>
+            <input class="form-control" type="text" id="phone-input" th:field="*{phone}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">전화번호 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="open-date-input">장날</label>
+            <input class="form-control" type="text" id="open-date-input" th:field="*{openDate}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('openDate')}" th:errors="*{openDate}">장날 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="close-date-input">휴일</label>
+            <input class="form-control" type="text" id="close-date-input" th:field="*{closeDate}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('closeDate')}" th:errors="*{closeDate}">휴일 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="parking-input">주차</label>
+            <input class="form-control" type="text" id="parking-input" th:field="*{parking}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('parking')}" th:errors="*{parking}">주차 정보 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="transport-input">교통</label>
+            <input class="form-control" type="text" id="transport-input" th:field="*{transport}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('transport')}" th:errors="*{transport}">교통 정보 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="facility-input">편의시설</label>
+            <input class="form-control" type="text" id="facility-input" th:field="*{facility}">
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('facility')}" th:errors="*{facility}">편의시설 오류</th:block>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="info-input">설명</label>
+            <textarea class="margin-top-20" id="info-input" th:field="*{info}"></textarea>
+            <div class="invalid-feedback d-block">
+                <th:block th:if="${#fields.hasErrors('info')}" th:errors="*{info}">설명 오류</th:block>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input class="btn btn-primary mx-1" type="submit" value="저장">
+            <a class="btn btn-secondary mx-1" th:href="@{/shopping/mall/manage}">취소</a>
+            <input class="btn btn-danger mx-1" type="button" value="삭제" onclick="del()">
+        </div>
+    </form>
+</main>
+<footer th:replace="/fragment :: footer"></footer>
+<script>
+    function del() {
+        document.getElementById("delete-form").submit();
+    }
+
+    document.getElementById('map-open').onclick = (e) => {
+        window.name='parent'
+        let child = window.open("/mapPopup.html", 'childForm', "width=800, height=500, resizable = no, scrollbars = no")
+        e.preventDefault();
+    }
+
+    $(function() {
+        $('#info-input').summernote({
+            height: 500,
+            minHeight: 400,
+            maxHeight: null,
+            focus: true,
+            lang: "ko-KR",
+            placeholder: '최대 2048자까지 쓸 수 있습니다',
+            callbacks : {
+                onImageUpload : function(files, editor, welEditable) {
+                    for (let i = 0; i < files.length; i++) {
+                        uploadImage(files[i], this);
+                    }
+                }
+            }
+        });
+    })
+
+    function uploadImage(file, editor) {
+        const data = new FormData();
+
+        let csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        let csrfParameter =  document.querySelector('meta[name="_csrf_parameterName"]').content;
+
+        data.append("file", file);
+        data.append(csrfParameter, csrfToken);
+
+        $.ajax({
+            url : "/file/upload",
+            data : data,
+            method: "POST",
+            enctype : 'multipart/form-data',
+            processData : false,
+            contentType : false,
+        }).done(function(response) {
+            $(editor).summernote('editor.insertImage', response.message);
+        })
+    }
+
+    function deleteThumbnailImage(e) {
+        $(e).parent().remove();
+    }
+
+    function uploadThumbnailImage(e) {
+        if (e.files[0] == null) {
+            $("#thumbnail-upload-input").val("");
+        } else {
+            const data = new FormData();
+
+            let csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            let csrfParameter =  document.querySelector('meta[name="_csrf_parameterName"]').content;
+
+            data.append("file", e.files[0]);
+            data.append(csrfParameter, csrfToken);
+
+            $.ajax({
+                url : "/file/upload",
+                data : data,
+                method: "POST",
+                enctype : 'multipart/form-data',
+                processData : false,
+                contentType : false,
+            }).done(function(response) {
+                const imgSrc = response.message;
+                const thumbnailList = $("#thumbnail-list");
+                thumbnailList.append(
+                    "<div id=\"" + imgSrc + "\" class=\"d-flex flex-row mb-1\">" +
+                    "<input class=\"form-control\" type=\"text\" name=\"thumbnails\" value=\"" + imgSrc + "\" readonly>" +
+                    "<button class=\"btn btn-danger ml-2\" onclick=\"deleteThumbnailImage(this)\">삭제</button>" +
+                    "</div>"
+                );
+
+                $("#thumbnail-upload-input").val("");
+            })
+        }
+    }
+</script>
+</body>
+</html>
